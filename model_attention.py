@@ -79,7 +79,7 @@ def create_model(look_back): #4,64 128 128 128 best optimization
     encoder_inputs = keras.layers.Input(shape=(look_back, 7))
     encoder_x = MultiHeadAttention(num_heads=4, key_dim=16)(encoder_inputs, encoder_inputs)
     encoder_x = LayerNormalization(epsilon=1e-6)(encoder_x + encoder_inputs)
-    #encoder_x = Dropout(0.01)(encoder_x)
+
     encoder_outputs, state_h, state_c = keras.layers.LSTM(100, return_state=True)(encoder_x)
     encoder_states = [state_h, state_c]
 
@@ -89,7 +89,6 @@ def create_model(look_back): #4,64 128 128 128 best optimization
 
     decoder_outputs = keras.layers.GlobalAveragePooling1D(data_format="channels_first")(decoder_outputs)
     decoder_outputs = keras.layers.Dense(100, activation="relu")(decoder_outputs)
-    #decoder_outputs = keras.layers.Dropout(0.2)(decoder_outputs)
 
     outputs = keras.layers.Dense(1, activation="linear")(decoder_outputs)
     optimizer = keras.optimizers.Adam(learning_rate=1e-6)
